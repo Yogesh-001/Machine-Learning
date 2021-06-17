@@ -1,0 +1,64 @@
+MCQ:
+1. KNN(K Nearest Neighbor) is used as both Classifier and as well as Regressor.
+
+A) True
+B) False
+
+Answer- option A
+
+2.
+s.no	AGE	TEMPERATURE	BP	OXYGEN	COVID
+0	58	103	170	80	Yes
+1	25	100	165	90	Yes
+2	18	98	120	94	No
+3	61	102	180	91	Yes
+4	21	99	140	95	No
+5	19	93	135	96	No
+6	65	102	171	89	Yes
+7	27	100	140	94	No
+8	71	103	170	91	Yes
+9	59	101	150	94	No
+10	45	101	160	91	Yes
+11	33	97	140	94	No
+12	35	102	170	90	Yes
+13	32	100	165	90	Yes
+
+Bala wants to check whether a patient is suffering from covid or not Help him in identifying the patients with Covid by the help of KNN(K Nearest Neighbor) algorithm in Machine Learning by taking 3 neighbors for the model. CSV file name is covid.csv and also check the precision and accuracy of your model.
+
+sol:
+import pandas as pd
+import numpy as np
+
+Data=pd.read_csv('covid.csv')
+Data.head()
+
+df=pd.DataFrame(Data)
+df.head()
+
+from sklearn.preprocessing import LabelEncoder
+covid=LabelEncoder()
+df['covid']=covid.fit_transform(df['COVID'])
+df.drop(['COVID'],axis=1,inplace=True)
+df.head()
+
+X=df.drop(['s.no','covid'],axis=1)
+y=df['covid']
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.25,random_state=0)
+
+from sklearn.preprocessing import StandardScaler    
+st_x= StandardScaler()    
+X_train= st_x.fit_transform(X_train)    
+X_test= st_x.transform(X_test)
+
+from sklearn.neighbors import KNeighborsClassifier
+model=KNeighborsClassifier(n_neighbors=3)
+model.fit(X_train,y_train)
+
+y_pred=model.predict(X_test)
+y_pred
+
+from sklearn.metrics import classification_report,confusion_matrix
+print(classification_report(y_test,y_pred))
+print(confusion_matrix(y_test,y_pred))
